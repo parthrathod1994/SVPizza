@@ -1,27 +1,19 @@
 package com.example.user.svpizza.mainmenu;
 
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.example.user.svpizza.R;
+import com.example.user.svpizza.menudetail.*;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,15 +29,13 @@ public class category extends AppCompatActivity {
 
     final Context context = this;
 
-    LayoutInflater layoutInflater;
-
-    View promptView;
-
-    AlertDialog.Builder alertDialogBuilder;
+    String text;
 
     Map<String, String> mapMenu;
 
     DatabaseReference databaseReference;
+
+    Button bt_proceed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +45,7 @@ public class category extends AppCompatActivity {
         mapMenu = new HashMap<String, String>();
 
         sp_spinner = (Spinner) findViewById(R.id.menuspinner);
+        bt_proceed = (Button) findViewById(R.id.btproceed);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -81,6 +72,36 @@ public class category extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        bt_proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(text != null) {
+                    Intent menu_detail = new Intent(getApplicationContext(), detail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("name", text);
+                    menu_detail.putExtras(bundle);
+                    startActivity(menu_detail);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Please Select Any Pizza",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        sp_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                text = mapMenu.get(sp_spinner.getSelectedItem().toString()).toString();
+                //Toast.makeText(context,text,Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -225,3 +246,5 @@ public class category extends AppCompatActivity {
         return true;
     }*/
 }
+
+
