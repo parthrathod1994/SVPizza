@@ -10,8 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.svpizza.R;
+import com.example.user.svpizza.cart.CustomAdapter;
 import com.example.user.svpizza.mainmenu.firebaseCategoryList;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,7 +34,7 @@ import java.util.Map;
 public class detail extends AppCompatActivity {
 
     Bundle bundle;
-    String key,name,ing,price,imgurl;
+    String key,name,ing,price,imgurl,count;
     TextView tw_name,tw_price,tw_count,tw_ing,tw_total;
 
     Button add_button;
@@ -71,10 +73,18 @@ public class detail extends AppCompatActivity {
                 ing = dataSnapshot.child("menu").child(key).child("ing").getValue().toString();
                 price = dataSnapshot.child("menu").child(key).child("price").getValue().toString();
                 imgurl = dataSnapshot.child("menu").child(key).child("link").getValue().toString();
+                count = dataSnapshot.child("cart").child(key).child("count").getValue().toString();
+                tw_count.setText(count);
                 tw_name.setText(name);
                 tw_ing.setText(ing);
                 tw_price.setText(price);
                 int count_value = Integer.parseInt(tw_count.getText().toString());
+
+                if(count_value > 0)
+                {
+                    add_button.setText("Update");
+                }
+
                 count_value = count_value * Integer.parseInt(price);
                 tw_total.setText(String.valueOf(count_value));
                 new DownLoadImageTask(imageView).execute(imgurl);
@@ -99,16 +109,10 @@ public class detail extends AppCompatActivity {
     {
         int i = Integer.parseInt(tw_count.getText().toString());
 
-        Map<String, String> dataValue = new HashMap<String, String>();
-
-        dataValue.put("key", key);
-        dataValue.put("name", name);
-        dataValue.put("count", String.valueOf(i));
-        dataValue.put("price", price);
-        dataValue.put("totalprice", tw_total.getText().toString());
-
-
-        databaseReference.child("cart").push().setValue(dataValue);
+        databaseReference.child("cart").child(key).child("count").setValue(String.valueOf(i));
+        databaseReference.child("cart").child(key).child("totalprice").setValue(tw_total.getText().toString());
+        Toast.makeText(getApplicationContext(),name + "is added to the cart",Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     public void button_minus(View view)

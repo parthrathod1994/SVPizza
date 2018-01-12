@@ -1,18 +1,21 @@
 package com.example.user.svpizza.mainmenu;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.example.user.svpizza.R;
+import com.example.user.svpizza.cart.*;
 import com.example.user.svpizza.menudetail.*;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,6 +40,8 @@ public class category extends AppCompatActivity {
 
     Button bt_proceed;
 
+    ImageView img_cart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,8 @@ public class category extends AppCompatActivity {
 
         sp_spinner = (Spinner) findViewById(R.id.menuspinner);
         bt_proceed = (Button) findViewById(R.id.btproceed);
+
+        img_cart = (ImageView) findViewById(R.id.imageView4);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -101,8 +108,6 @@ public class category extends AppCompatActivity {
 
             }
         });
-
-
        /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -245,6 +250,28 @@ public class category extends AppCompatActivity {
         }
         return true;
     }*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cartmain:
+                Intent menu_cart = new Intent(getApplicationContext(), menucart.class);
+                startActivity(menu_cart);
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
 }
 
 
